@@ -29,6 +29,7 @@ export default function StudentWishes() {
   }, []);
 
   const wishes = [
+    { name: "Avinash", wish: "Happy Birthday Sir! Thank you for the endless guidance, support, and for making every class memorable." },
     { name: "Ayush", wish: "Happy birthday to the mentor who showed me my true potential." },
     { name: "Kislay", wish: "May your day be as wonderful as your teaching." },
     { name: "Priyanshu", wish: "Thank you for the patience and the countless lessons." },
