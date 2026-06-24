@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { playPaperRustle } from '../utils/audio';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -23,6 +24,7 @@ export default function Letter() {
         scrollTrigger: {
           trigger: container.current,
           start: 'top 70%',
+          onEnter: () => playPaperRustle()
         },
       }
     );

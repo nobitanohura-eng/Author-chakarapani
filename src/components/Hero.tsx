@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import confetti from 'canvas-confetti';
+import { playClick } from '../utils/audio';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,13 +14,44 @@ export default function Hero() {
   useEffect(() => {
     if (!container.current || !imageRef.current || !textRef.current) return;
 
+    const triggerSplash = () => {
+      const rect = imageRef.current?.getBoundingClientRect();
+      if (rect) {
+        const x = (rect.left + rect.width / 2) / window.innerWidth;
+        const y = (rect.top + rect.height / 2) / window.innerHeight;
+        
+        const count = 120;
+        const defaults = { origin: { x, y }, zIndex: 100, colors: ['#ffb7b2', '#e28743', '#87ceeb', '#f0f0f0', '#3e362e'] };
+
+        function fire(particleRatio: number, opts: any) {
+          confetti(Object.assign({}, defaults, opts, {
+            particleCount: Math.floor(count * particleRatio)
+          }));
+        }
+
+        fire(0.25, { spread: 26, startVelocity: 55 });
+        fire(0.2, { spread: 60 });
+        fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+        fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+        fire(0.1, { spread: 120, startVelocity: 45 });
+      }
+    };
+
     // A smoother ease prevents the "rapid/snappy" start of the animation
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ delay: 0.3, defaults: { ease: 'power2.out' } });
 
       tl.fromTo(imageRef.current, 
         { autoAlpha: 0, y: 30, scale: 0.98 },
-        { autoAlpha: 1, y: 0, scale: 1, duration: 2.5 }
+        { 
+          autoAlpha: 1, 
+          y: 0, 
+          scale: 1, 
+          duration: 2.5,
+          onStart: () => {
+            setTimeout(triggerSplash, 400);
+          }
+        }
       )
       .fromTo(textRef.current!.children,
         { autoAlpha: 0, y: 20 },
@@ -31,6 +64,7 @@ export default function Hero() {
   }, []);
 
   const scrollToNext = () => {
+    playClick();
     window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
   };
 
